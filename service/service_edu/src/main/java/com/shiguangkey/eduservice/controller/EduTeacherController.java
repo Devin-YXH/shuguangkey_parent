@@ -98,6 +98,8 @@ public class EduTeacherController {
         teacherService.page(page,wrapper);
         List<EduTeacher> records = page.getRecords();
         long total = page.getTotal();
+        
+        //测试远程代码拉取
 
         return R.ok().data("list",records).data("total",total);
     }
