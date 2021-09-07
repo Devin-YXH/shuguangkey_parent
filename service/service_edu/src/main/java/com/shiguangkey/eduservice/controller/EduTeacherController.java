@@ -93,7 +93,7 @@ public class EduTeacherController {
         if(!StringUtils.isEmpty(end)){
             wrapper.le("gmt_create",end);
         }
-
+        //分页查询
         Page<EduTeacher> page = new Page<>(current,limit);
         teacherService.page(page,wrapper);
         List<EduTeacher> records = page.getRecords();
@@ -101,6 +101,5 @@ public class EduTeacherController {
 
         return R.ok().data("list",records).data("total",total);
     }
-
 }
 
