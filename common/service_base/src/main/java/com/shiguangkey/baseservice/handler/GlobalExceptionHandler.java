@@ -20,8 +20,6 @@ public class GlobalExceptionHandler {
 
     /**
      * 特殊异常处理
-     * @param e
-     * @return
      */
     @ExceptionHandler(ArithmeticException.class)
     @ResponseBody
