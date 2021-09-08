@@ -14,15 +14,16 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * 讲师 前端控制器
+ * 讲师管理前端控制器
  *
- * @author testjava
+ * @author Devin
  * @since 2021-09-03
  */
 
 @Api(description="讲师管理")
 @RestController
 @RequestMapping("/eduservice/eduteacher")
+@CrossOrigin
 public class EduTeacherController {
 
     @Autowired
@@ -47,27 +48,40 @@ public class EduTeacherController {
      */
     @ApiOperation(value = "根据ID逻辑删除讲师")
     @DeleteMapping("{id}")
-    public boolean delTeacher(@PathVariable String id) {
-        return teacherService.removeById(id);
+    public R delTeacher(@PathVariable String id) {
+        boolean remove = teacherService.removeById(id);
+        if(remove){
+            return R.ok();
+        }else{
+            return R.error();
+        }
     }
 
     /**
      * 分页查询讲师列表
      *
      * @param current 当前页
-     * @param limt    每页显示记录数
+     * @param limit    每页显示记录数
      * @return 分页后的数据
      */
     @ApiOperation(value = "分页查询讲师列表")
-    @GetMapping("getTeacherPage/{current}/{limt}")
-    public R getTeacherPage(@PathVariable Long current, @PathVariable Long limt) {
-        Page<EduTeacher> page = new Page<>(current, limt);
+    @PostMapping("getTeacherPage/{current}/{limit}")
+    public R getTeacherPage(@PathVariable Long current,
+                            @PathVariable Long limit) {
+        Page<EduTeacher> page = new Page<>(current, limit);
         teacherService.page(page, null);
         List<EduTeacher> records = page.getRecords();
         long total = page.getTotal();
         return R.ok().data("list", records).data("total", total);
     }
 
+    /**
+     * 带条件的分页查询讲师数据
+     * @param current 当前页
+     * @param limit     每页显示记录数
+     * @param teacherQuery  查询实体
+     * @return 分页后的数据
+     */
     @ApiOperation(value = "带条件的分页查询讲师数据")
     @PostMapping("getTeacherPageVo/{current}/{limit}")
     public R getTeacherPageVo(@PathVariable Long current,
@@ -106,7 +120,7 @@ public class EduTeacherController {
     /**
      * 添加讲师
      * @param eduTeacher 讲师实体
-     * @return 成功或者失败
+     * @return 添加成功或者失败
      */
     @ApiOperation("添加讲师")
     @PostMapping("addTeacher")
@@ -119,7 +133,11 @@ public class EduTeacherController {
         }
     }
 
-
+    /**
+     * 修改前根据讲师ID查询讲师数据
+     * @param id 讲师ID
+     * @return 讲师数据
+     */
     @ApiOperation("修改前根据讲师ID查询讲师数据")
     @GetMapping("getTeacherById/{id}")
     public R getTeacherById(@PathVariable String id){
@@ -127,6 +145,11 @@ public class EduTeacherController {
         return R.ok().data("eduTeacher",eduTeacher);
     }
 
+    /**
+     * 修改讲师
+     * @param eduTeacher 讲师实体
+     * @return 修改成功或失败
+     */
     @ApiOperation("修改讲师")
     @PostMapping("updateTeacher")
     public R updateTeacher(@RequestBody EduTeacher eduTeacher){
@@ -136,7 +159,6 @@ public class EduTeacherController {
         }else{
             return R.error();
         }
-
     }
 }
 
